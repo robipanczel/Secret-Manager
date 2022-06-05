@@ -3,7 +3,7 @@ import { Message } from '@secret-manager/api-interfaces';
 
 @Injectable()
 export class AppService {
-  getData(): Message {
+  healthCheck(): Message {
     return { message: 'Welcome to api!' };
   }
 }
