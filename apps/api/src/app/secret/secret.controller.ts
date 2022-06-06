@@ -1,4 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CreateSecretDto } from '@secret-manager/api-interfaces';
 import { Secret } from './schemas/secret.schema';
 import { SecretService } from './secret.service';
 
@@ -11,5 +12,10 @@ export class SecretController {
     @Param('hashedSecretText') hashedSecretText: string
   ): Promise<Secret> {
     return await this.secretService.getSecret(hashedSecretText);
+  }
+
+  @Post()
+  async createSecret(@Body() secretDto: CreateSecretDto): Promise<Secret> {
+    return await this.secretService.createSecret(secretDto);
   }
 }
