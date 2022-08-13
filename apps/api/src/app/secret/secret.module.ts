@@ -3,12 +3,13 @@ import { SecretService } from './secret.service';
 import { SecretController } from './secret.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Secret, SecretSchema } from './schemas/secret.schema';
+import { SecretRepository } from './secret.repository';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Secret.name, schema: SecretSchema }]),
   ],
-  providers: [SecretService],
+  providers: [SecretService, SecretRepository],
   controllers: [SecretController],
 })
 export class SecretModule {}

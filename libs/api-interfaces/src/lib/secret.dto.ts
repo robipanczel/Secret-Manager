@@ -1,10 +1,16 @@
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateSecretDto {
   @IsString()
+  @IsNotEmpty()
+  secretName: string;
+  
+  @IsString()
+  @IsNotEmpty()
   secretText: string;
 
-  @IsString()
+  @IsNumber()
+  @IsNotEmpty()
   remainingViews: number;
 
   constructor(secretText: string, remainingViews: number) {

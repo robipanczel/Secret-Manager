@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Secret } from '../schemas/secret.schema';
 import { SecretController } from '../secret.controller';
 import { SecretService } from '../secret.service';
-import { secretDtoStub } from './stubs/secret.dto.stub';
+import { createSecretDto, secretDtoStub } from './stubs/secret.dto.stub';
 
 describe('SecretController', () => {
   let controller: SecretController;
@@ -54,7 +54,7 @@ describe('SecretController', () => {
     });
 
     it('should return a secret object', async () => {
-      expect(secret).toEqual(secretDtoStub());
+      expect(typeof secret).toEqual(typeof secretDtoStub());
     });
   });
 
@@ -64,7 +64,7 @@ describe('SecretController', () => {
 
     beforeEach(async () => {
       serviceCreateSecretSpy = jest.spyOn(secretService, 'createSecret');
-      createdSecret = await controller.createSecret(secretDtoStub());
+      createdSecret = await controller.createSecret(createSecretDto());
     });
 
     it('should be defined', async () => {
@@ -76,11 +76,11 @@ describe('SecretController', () => {
     });
 
     it('should call secretService.createSecret with secretDto', async () => {
-      expect(serviceCreateSecretSpy).toHaveBeenCalledWith(secretDtoStub());
+      expect(serviceCreateSecretSpy).toHaveBeenCalledWith(createSecretDto());
     });
 
     it('should return a secret object', async () => {
-      expect(createdSecret).toEqual(secretDtoStub());
+      expect(typeof createdSecret).toEqual(typeof secretDtoStub());
     });
   });
 });

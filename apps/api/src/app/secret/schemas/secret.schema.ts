@@ -1,9 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Secret {
+  @Prop({ auto: true })
+  _id: mongoose.Types.ObjectId;
+
   @Prop({ required: true })
   hashedSecretText: string;
+  
+  @Prop({ required: true })
+  secretName: string;
 
   @Prop({ required: true })
   secretText: string;
