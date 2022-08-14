@@ -1,8 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import {
+  PaginationQuery,
+  ReadSecretMetaDto,
+} from '@secret-manager/api-interfaces';
 import { Secret } from '../schemas/secret.schema';
 import { SecretController } from '../secret.controller';
 import { SecretService } from '../secret.service';
-import { createSecretDto, secretDtoStub } from './stubs/secret.dto.stub';
+import {
+  createSecretDto,
+  readSecretMetaDtos,
+  secretDtoStub,
+} from './stubs/secret.dto.stub';
 
 describe('SecretController', () => {
   let controller: SecretController;
@@ -17,6 +25,9 @@ describe('SecretController', () => {
           useFactory: () => ({
             getSecret: jest.fn().mockResolvedValue(secretDtoStub()),
             createSecret: jest.fn().mockResolvedValue(secretDtoStub()),
+            getAllSecretNames: jest
+              .fn()
+              .mockResolvedValue(readSecretMetaDtos()),
           }),
         },
       ],
@@ -43,11 +54,11 @@ describe('SecretController', () => {
       expect(controller.getSecret).toBeDefined();
     });
 
-    it('should call secretService.getSecret', async () => {
+    it('should call secretService.getSecret()', async () => {
       expect(serviceGetSecretSpy).toHaveBeenCalled();
     });
 
-    it('should call secretService.getSecret with hashedSecret', async () => {
+    it('should call secretService.getSecret() with hashedSecret', async () => {
       expect(serviceGetSecretSpy).toHaveBeenCalledWith(
         secretDtoStub().hashedSecretText
       );
@@ -71,16 +82,47 @@ describe('SecretController', () => {
       expect(controller.createSecret).toBeDefined();
     });
 
-    it('should call secretService.createSecret', async () => {
+    it('should call secretService.createSecret()', async () => {
       expect(serviceCreateSecretSpy).toHaveBeenCalled();
     });
 
-    it('should call secretService.createSecret with secretDto', async () => {
+    it('should call secretService.createSecret() with secretDto', async () => {
       expect(serviceCreateSecretSpy).toHaveBeenCalledWith(createSecretDto());
     });
 
     it('should return a secret object', async () => {
-      expect(typeof createdSecret).toEqual(typeof secretDtoStub());
+      expect(createdSecret).toEqual(secretDtoStub());
+    });
+  });
+
+  describe('when getAllSecretNames is called', () => {
+    let serviceGetAllSecretNamesSpy: jest.SpyInstance;
+    let secretNames: ReadSecretMetaDto[];
+    let paginationQuery: PaginationQuery;
+
+    beforeEach(async () => {
+      serviceGetAllSecretNamesSpy = jest.spyOn(
+        secretService,
+        'getAllSecretNames'
+      );
+      paginationQuery = new PaginationQuery(1, 0);
+      secretNames = await controller.getAllSecretNames(paginationQuery);
+    });
+
+    it('should be defined', () => {
+      expect(controller.getAllSecretNames).toBeDefined();
+    });
+
+    it('should call secretService.GetAllSecretNames()', () => {
+      expect(serviceGetAllSecretNamesSpy).toHaveBeenCalled();
+    });
+
+    it('should call secretService.GetAllSecretNames() with PaginationQuery', () => {
+      expect(serviceGetAllSecretNamesSpy).toHaveBeenCalledWith(paginationQuery);
+    });
+
+    it('should return a ReadSecretMetaDto object', () => {
+      expect(secretNames).toEqual(readSecretMetaDtos());
     });
   });
 });

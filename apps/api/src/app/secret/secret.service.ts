@@ -1,10 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSecretDto } from '@secret-manager/api-interfaces';
+import {
+  CreateSecretDto,
+  PaginationQuery,
+  ReadSecretMetaDto,
+} from '@secret-manager/api-interfaces';
 import { Secret } from './schemas/secret.schema';
-import { secretDtoStub } from './tests/stubs/secret.dto.stub';
+import {
+  readSecretMetaDtos,
+  secretDtoStub,
+} from './tests/stubs/secret.dto.stub';
 
 @Injectable()
 export class SecretService {
+  async getAllSecretNames(
+    paginationQuery: PaginationQuery
+  ): Promise<ReadSecretMetaDto[]> {
+    return readSecretMetaDtos();
+  }
+
   async getSecret(hashedSecretText: string): Promise<Secret> {
     return secretDtoStub();
   }

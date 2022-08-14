@@ -1,4 +1,7 @@
-import { CreateSecretDto } from '@secret-manager/api-interfaces';
+import {
+  CreateSecretDto,
+  ReadSecretMetaDto,
+} from '@secret-manager/api-interfaces';
 import mongoose from 'mongoose';
 import { Secret } from '../../schemas/secret.schema';
 
@@ -24,4 +27,23 @@ export const createSecretDto = (): CreateSecretDto => {
     secretText: secretDtoStub().secretText,
     remainingViews: secretDtoStub().remainingViews,
   };
+};
+
+export const readSecretMetaDto = (): ReadSecretMetaDto => {
+  return {
+    _id: secretDtoStub()._id,
+    hashedSecretText: secretDtoStub().hashedSecretText,
+    secretName: secretDtoStub().secretName,
+    remainingViews: secretDtoStub().remainingViews,
+    createdAt: secretDtoStub().createdAt,
+    updatedAt: secretDtoStub().updatedAt,
+  };
+};
+
+export const readSecretMetaDtos = (): ReadSecretMetaDto[] => {
+  const readSecretMeta = [];
+  for (let index = 0; index < 10; index++) {
+    readSecretMeta.push(readSecretMetaDto());
+  }
+  return readSecretMeta;
 };

@@ -1,11 +1,22 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateSecretDto } from '@secret-manager/api-interfaces';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  CreateSecretDto,
+  PaginationQuery,
+  ReadSecretMetaDto,
+} from '@secret-manager/api-interfaces';
 import { Secret } from './schemas/secret.schema';
 import { SecretService } from './secret.service';
 
 @Controller('secret')
 export class SecretController {
   constructor(private readonly secretService: SecretService) {}
+
+  @Get()
+  async getAllSecretNames(
+    @Query() paginationQuery: PaginationQuery
+  ): Promise<ReadSecretMetaDto[]> {
+    return await this.secretService.getAllSecretNames(paginationQuery);
+  }
 
   @Get(':hashedSecretText')
   async getSecret(
