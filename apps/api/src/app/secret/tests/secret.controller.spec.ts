@@ -65,13 +65,13 @@ describe('SecretController', () => {
     });
 
     it('should return a secret object', async () => {
-      expect(typeof secret).toEqual(typeof secretDtoStub());
+      expect(secret).toEqual(secretDtoStub());
     });
   });
 
   describe('when createSecret is called', () => {
     let serviceCreateSecretSpy: jest.SpyInstance;
-    let createdSecret: Secret;
+    let createdSecret: ReadSecretMetaDto;
 
     beforeEach(async () => {
       serviceCreateSecretSpy = jest.spyOn(secretService, 'createSecret');
@@ -109,19 +109,19 @@ describe('SecretController', () => {
       secretNames = await controller.getAllSecretNames(paginationQuery);
     });
 
-    it('should be defined', () => {
+    it('should be defined', async () => {
       expect(controller.getAllSecretNames).toBeDefined();
     });
 
-    it('should call secretService.GetAllSecretNames()', () => {
+    it('should call secretService.GetAllSecretNames()', async () => {
       expect(serviceGetAllSecretNamesSpy).toHaveBeenCalled();
     });
 
-    it('should call secretService.GetAllSecretNames() with PaginationQuery', () => {
+    it('should call secretService.GetAllSecretNames() with PaginationQuery', async () => {
       expect(serviceGetAllSecretNamesSpy).toHaveBeenCalledWith(paginationQuery);
     });
 
-    it('should return a ReadSecretMetaDto object', () => {
+    it('should return a ReadSecretMetaDto object', async () => {
       expect(secretNames).toEqual(readSecretMetaDtos());
     });
   });

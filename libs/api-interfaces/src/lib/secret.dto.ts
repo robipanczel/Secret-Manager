@@ -55,3 +55,4 @@ export class ReadSecretDto {
 }
 
 export type ReadSecretMetaDto = Omit<ReadSecretDto, 'secretText'>;
+export type UpdateSecretMetaDto = Partial<ReadSecretDto>;

@@ -26,7 +26,9 @@ export class SecretController {
   }
 
   @Post()
-  async createSecret(@Body() secretDto: CreateSecretDto): Promise<Secret> {
+  async createSecret(
+    @Body() secretDto: CreateSecretDto
+  ): Promise<ReadSecretMetaDto> {
     return await this.secretService.createSecret(secretDto);
   }
 }
