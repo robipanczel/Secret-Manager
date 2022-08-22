@@ -6,6 +6,7 @@ import {
 } from '@secret-manager/api-interfaces';
 import { Secret } from './schemas/secret.schema';
 import { SecretRepository } from './secret.repository';
+import { MD5 } from 'object-hash';
 
 @Injectable()
 export class SecretService {
@@ -14,7 +15,17 @@ export class SecretService {
   async getAllSecretNames(
     paginationQuery: PaginationQuery
   ): Promise<ReadSecretMetaDto[]> {
-    return await this.secretRepository.findAll(paginationQuery);
+    const secrets = await this.secretRepository.findAll(paginationQuery);
+    return secrets.map((secret) => {
+      return {
+        _id: secret._id,
+        hashedSecretText: secret.hashedSecretText,
+        secretName: secret.secretName,
+        remainingViews: secret.remainingViews,
+        createdAt: secret.createdAt,
+        updatedAt: secret.updatedAt,
+      };
+    });
   }
 
   async getSecret(hashedSecretText: string): Promise<Secret> {
@@ -31,6 +42,8 @@ export class SecretService {
   }
 
   async createSecret(secretDto: CreateSecretDto): Promise<ReadSecretMetaDto> {
+    const hashedText = MD5(secretDto.secretText);
+
     const {
       _id,
       hashedSecretText,
@@ -38,7 +51,7 @@ export class SecretService {
       remainingViews,
       createdAt,
       updatedAt,
-    } = await this.secretRepository.create(secretDto);
+    } = await this.secretRepository.create(secretDto, hashedText);
 
     return {
       _id,

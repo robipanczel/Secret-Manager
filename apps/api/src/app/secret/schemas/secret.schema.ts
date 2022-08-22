@@ -1,14 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class Secret {
-  @Prop({ auto: true })
-  _id: mongoose.Types.ObjectId;
-
+export class Secret extends Document {
   @Prop({ required: true })
   hashedSecretText: string;
-  
+
   @Prop({ required: true })
   secretName: string;
 
@@ -26,5 +23,3 @@ export class Secret {
 }
 
 export const SecretSchema = SchemaFactory.createForClass(Secret);
-
-export type SecretDocument = Secret & Document;

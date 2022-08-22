@@ -3,9 +3,8 @@ import {
   ReadSecretMetaDto,
 } from '@secret-manager/api-interfaces';
 import mongoose from 'mongoose';
-import { Secret } from '../../schemas/secret.schema';
 
-export const secretDtoStub = (): Secret => {
+export const secretDtoStub = () => {
   return {
     _id: new mongoose.Types.ObjectId('5cabe64dcf0d4447fa60f5e2'),
     hashedSecretText: 'hashedSecretText',
