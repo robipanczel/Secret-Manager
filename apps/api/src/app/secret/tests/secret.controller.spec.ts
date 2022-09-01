@@ -25,7 +25,7 @@ describe('SecretController', () => {
           useFactory: () => ({
             getSecret: jest.fn().mockResolvedValue(secretDtoStub()),
             createSecret: jest.fn().mockResolvedValue(secretDtoStub()),
-            getAllSecretNames: jest
+            getAllSecretMetaData: jest
               .fn()
               .mockResolvedValue(readSecretMetaDtos()),
           }),
@@ -95,30 +95,32 @@ describe('SecretController', () => {
     });
   });
 
-  describe('when getAllSecretNames is called', () => {
-    let serviceGetAllSecretNamesSpy: jest.SpyInstance;
+  describe('when getAllSecretMetaData is called', () => {
+    let serviceGetAllSecretMetaDataSpy: jest.SpyInstance;
     let secretNames: ReadSecretMetaDto[];
     let paginationQuery: PaginationQuery;
 
     beforeEach(async () => {
-      serviceGetAllSecretNamesSpy = jest.spyOn(
+      serviceGetAllSecretMetaDataSpy = jest.spyOn(
         secretService,
-        'getAllSecretNames'
+        'getAllSecretMetaData'
       );
       paginationQuery = new PaginationQuery(1, 0);
-      secretNames = await controller.getAllSecretNames(paginationQuery);
+      secretNames = await controller.getAllSecretMetaData(paginationQuery);
     });
 
     it('should be defined', async () => {
-      expect(controller.getAllSecretNames).toBeDefined();
+      expect(controller.getAllSecretMetaData).toBeDefined();
     });
 
-    it('should call secretService.GetAllSecretNames()', async () => {
-      expect(serviceGetAllSecretNamesSpy).toHaveBeenCalled();
+    it('should call secretService.getAllSecretMetaData()', async () => {
+      expect(serviceGetAllSecretMetaDataSpy).toHaveBeenCalled();
     });
 
-    it('should call secretService.GetAllSecretNames() with PaginationQuery', async () => {
-      expect(serviceGetAllSecretNamesSpy).toHaveBeenCalledWith(paginationQuery);
+    it('should call secretService.getAllSecretMetaData() with PaginationQuery', async () => {
+      expect(serviceGetAllSecretMetaDataSpy).toHaveBeenCalledWith(
+        paginationQuery
+      );
     });
 
     it('should return a ReadSecretMetaDto object', async () => {

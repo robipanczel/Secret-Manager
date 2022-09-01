@@ -12,10 +12,10 @@ export class SecretController {
   constructor(private readonly secretService: SecretService) {}
 
   @Get()
-  async getAllSecretNames(
+  async getAllSecretMetaData(
     @Query() paginationQuery: PaginationQuery
   ): Promise<ReadSecretMetaDto[]> {
-    return await this.secretService.getAllSecretNames(paginationQuery);
+    return await this.secretService.getAllSecretMetaData(paginationQuery);
   }
 
   @Get(':hashedSecretText')

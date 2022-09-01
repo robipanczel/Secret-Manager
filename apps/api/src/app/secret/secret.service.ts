@@ -12,7 +12,7 @@ import { MD5 } from 'object-hash';
 export class SecretService {
   constructor(private readonly secretRepository: SecretRepository) {}
 
-  async getAllSecretNames(
+  async getAllSecretMetaData(
     paginationQuery: PaginationQuery
   ): Promise<ReadSecretMetaDto[]> {
     const secrets = await this.secretRepository.findAll(paginationQuery);
