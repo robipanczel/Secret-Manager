@@ -14,7 +14,8 @@ export class CreateSecretDto {
   @IsNotEmpty()
   remainingViews: number;
 
-  constructor(secretText: string, remainingViews: number) {
+  constructor(secretName: string, secretText: string, remainingViews: number) {
+    this.secretName = secretName;
     this.secretText = secretText;
     this.remainingViews = remainingViews;
   }

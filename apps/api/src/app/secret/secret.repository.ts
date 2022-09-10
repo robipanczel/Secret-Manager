@@ -28,7 +28,7 @@ export class SecretRepository {
 
     if (!secret) {
       throw new NotFoundException(
-        `Secret with ID ${hashedSecretText} not found`
+        `Secret with hash ${hashedSecretText} not found`
       );
     }
 
@@ -45,21 +45,33 @@ export class SecretRepository {
     });
   }
 
-  async update(hashedSecretText: string, update: UpdateSecretMetaDto): Promise<Secret> {
-    const updatedSecret = await this.secretModel.findOneAndUpdate({hashedSecretText}, update);
+  async update(
+    hashedSecretText: string,
+    update: UpdateSecretMetaDto
+  ): Promise<Secret> {
+    const updatedSecret = await this.secretModel.findOneAndUpdate(
+      { hashedSecretText },
+      update
+    );
 
     if (!updatedSecret) {
-      throw new NotFoundException(`Secret with ID ${hashedSecretText} not found`);
+      throw new NotFoundException(
+        `Secret with hash ${hashedSecretText} not found`
+      );
     }
 
     return updatedSecret;
   }
 
-  async remove(id: string): Promise<Secret> {
-    const removedSecret = await this.secretModel.findByIdAndRemove(id);
+  async remove(hashedSecretText: string): Promise<Secret> {
+    const removedSecret = await this.secretModel.findOneAndDelete({
+      hashedSecretText,
+    });
 
     if (!removedSecret) {
-      throw new NotFoundException(`Secret with ID ${id} not found`);
+      throw new NotFoundException(
+        `Secret with hash ${hashedSecretText} not found`
+      );
     }
 
     return removedSecret;

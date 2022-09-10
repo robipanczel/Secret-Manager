@@ -9,7 +9,7 @@ import { SecretService } from '../secret.service';
 import {
   createSecretDto,
   readSecretMetaDtos,
-  secretDtoStub,
+  secretStub,
 } from './stubs/secret.dto.stub';
 
 describe('SecretController', () => {
@@ -23,8 +23,8 @@ describe('SecretController', () => {
         {
           provide: SecretService,
           useFactory: () => ({
-            getSecret: jest.fn().mockResolvedValue(secretDtoStub()),
-            createSecret: jest.fn().mockResolvedValue(secretDtoStub()),
+            getSecret: jest.fn().mockResolvedValue(secretStub()),
+            createSecret: jest.fn().mockResolvedValue(secretStub()),
             getAllSecretMetaData: jest
               .fn()
               .mockResolvedValue(readSecretMetaDtos()),
@@ -47,7 +47,7 @@ describe('SecretController', () => {
 
     beforeEach(async () => {
       serviceGetSecretSpy = jest.spyOn(secretService, 'getSecret');
-      secret = await controller.getSecret(secretDtoStub().hashedSecretText);
+      secret = await controller.getSecret(secretStub().hashedSecretText);
     });
 
     it('should be defined', () => {
@@ -60,12 +60,12 @@ describe('SecretController', () => {
 
     it('should call secretService.getSecret() with hashedSecret', async () => {
       expect(serviceGetSecretSpy).toHaveBeenCalledWith(
-        secretDtoStub().hashedSecretText
+        secretStub().hashedSecretText
       );
     });
 
     it('should return a secret object', async () => {
-      expect(secret).toEqual(secretDtoStub());
+      expect(secret).toEqual(secretStub());
     });
   });
 
@@ -91,7 +91,7 @@ describe('SecretController', () => {
     });
 
     it('should return a secret object', async () => {
-      expect(createdSecret).toEqual(secretDtoStub());
+      expect(createdSecret).toEqual(secretStub());
     });
   });
 
