@@ -26,9 +26,9 @@ describe('SecretService', () => {
         {
           provide: SecretRepository,
           useFactory: () => ({
-            findAll: jest.fn().mockResolvedValue(readSecretMetaDtos()), //TODO: return array
-            findOne: jest.fn().mockResolvedValue(secretStub()), //TODO: return one secret
-            create: jest.fn(),
+            findAll: jest.fn().mockResolvedValue(readSecretMetaDtos()),
+            findOne: jest.fn().mockResolvedValue(secretStub()),
+            create: jest.fn().mockResolvedValue(secretStub()),
             update: jest.fn(),
             remove: jest.fn(),
           }),
@@ -122,7 +122,7 @@ describe('SecretService', () => {
 
   describe('when createSecret is called', () => {
     let repositoryCreateSpy: jest.SpyInstance;
-    let readSecretMetaDto: ReadSecretMetaDto;
+    let rSecretMetaDto: ReadSecretMetaDto;
     let createSecretDto: CreateSecretDto;
 
     beforeEach(async () => {
@@ -133,7 +133,7 @@ describe('SecretService', () => {
       );
 
       repositoryCreateSpy = jest.spyOn(secretRepository, 'create');
-      readSecretMetaDto = await service.createSecret(createSecretDto);
+      rSecretMetaDto = await service.createSecret(createSecretDto);
     });
 
     it('should be defined', () => {
@@ -143,5 +143,9 @@ describe('SecretService', () => {
     it('should call secretRepository.create()', async () => {
       expect(repositoryCreateSpy).toHaveBeenCalled();
     });
+
+    it('should return with a ReadSecretMetaDto', async () => {
+      expect(rSecretMetaDto).toEqual(readSecretMetaDto())
+    })
   });
 });
