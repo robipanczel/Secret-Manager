@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   PaginationQuery,
+  ReadSecretDto,
   ReadSecretMetaDto,
 } from '@secret-manager/api-interfaces';
-import { Secret } from '../schemas/secret.schema';
 import { SecretController } from '../secret.controller';
 import { SecretService } from '../secret.service';
 import {
@@ -43,7 +43,7 @@ describe('SecretController', () => {
 
   describe('when getSecret is called', () => {
     let serviceGetSecretSpy: jest.SpyInstance;
-    let secret: Secret;
+    let secret: ReadSecretDto;
 
     beforeEach(async () => {
       serviceGetSecretSpy = jest.spyOn(secretService, 'getSecret');

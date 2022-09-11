@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import {
   CreateSecretDto,
   PaginationQuery,
+  ReadSecretDto,
   ReadSecretMetaDto,
 } from '@secret-manager/api-interfaces';
-import { Secret } from './schemas/secret.schema';
 import { SecretRepository } from './secret.repository';
 import { MD5 } from 'object-hash';
 
@@ -18,7 +18,6 @@ export class SecretService {
     const secrets = await this.secretRepository.findAll(paginationQuery);
     return secrets.map((secret) => {
       return {
-        _id: secret._id,
         hashedSecretText: secret.hashedSecretText,
         secretName: secret.secretName,
         remainingViews: secret.remainingViews,
@@ -28,7 +27,7 @@ export class SecretService {
     });
   }
 
-  async getSecret(hashedSecretText: string): Promise<Secret> {
+  async getSecret(hashedSecretText: string): Promise<ReadSecretDto> {
     const secret = await this.secretRepository.findOne(hashedSecretText);
 
     secret.remainingViews -= 1;
@@ -38,14 +37,20 @@ export class SecretService {
       await this.secretRepository.update(hashedSecretText, secret);
     }
 
-    return secret;
+    return new ReadSecretDto(
+      secret.hashedSecretText,
+      secret.secretName,
+      secret.secretText,
+      secret.remainingViews,
+      secret.createdAt,
+      secret.updatedAt
+    );
   }
 
   async createSecret(secretDto: CreateSecretDto): Promise<ReadSecretMetaDto> {
     const hashedText = MD5(secretDto.secretText);
 
     const {
-      _id,
       hashedSecretText,
       secretName,
       remainingViews,
@@ -54,7 +59,6 @@ export class SecretService {
     } = await this.secretRepository.create(secretDto, hashedText);
 
     return {
-      _id,
       hashedSecretText,
       secretName,
       remainingViews,

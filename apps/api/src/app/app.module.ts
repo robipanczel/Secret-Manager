@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { SecretModule } from './secret/secret.module';
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.DATABASE_URL), SecretModule],
+  imports: [MongooseModule.forRoot('mongodb://localhost:27017/secret'), SecretModule],
   controllers: [AppController],
   providers: [AppService],
 })

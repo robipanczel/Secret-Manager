@@ -31,7 +31,6 @@ export const createSecretDto = (): CreateSecretDto => {
 
 export const readSecretMetaDto = (): ReadSecretMetaDto => {
   return {
-    _id: secretStub()._id,
     hashedSecretText: secretStub().hashedSecretText,
     secretName: secretStub().secretName,
     remainingViews: secretStub().remainingViews,

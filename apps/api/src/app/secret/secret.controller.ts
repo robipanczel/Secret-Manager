@@ -1,13 +1,15 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import {
   CreateSecretDto,
   PaginationQuery,
+  ReadSecretDto,
   ReadSecretMetaDto,
 } from '@secret-manager/api-interfaces';
-import { Secret } from './schemas/secret.schema';
 import { SecretService } from './secret.service';
 
-@Controller('secret')
+@ApiTags('secrets')
+@Controller('secrets')
 export class SecretController {
   constructor(private readonly secretService: SecretService) {}
 
@@ -21,7 +23,7 @@ export class SecretController {
   @Get(':hashedSecretText')
   async getSecret(
     @Param('hashedSecretText') hashedSecretText: string
-  ): Promise<Secret> {
+  ): Promise<ReadSecretDto> {
     return await this.secretService.getSecret(hashedSecretText);
   }
 

@@ -1,5 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import mongoose from 'mongoose';
+import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class CreateSecretDto {
   @IsString()
@@ -12,6 +11,7 @@ export class CreateSecretDto {
 
   @IsNumber()
   @IsNotEmpty()
+  @IsPositive()
   remainingViews: number;
 
   constructor(secretName: string, secretText: string, remainingViews: number) {
@@ -22,22 +22,14 @@ export class CreateSecretDto {
 }
 
 export class ReadSecretDto {
-  _id: mongoose.Types.ObjectId;
-
   hashedSecretText: string;
-
   secretName: string;
-
   secretText: string;
-
   remainingViews: number;
-
   createdAt: Date;
-
   updatedAt: Date;
 
   constructor(
-    _id: mongoose.Types.ObjectId,
     hashedSecretText: string,
     secretName: string,
     secretText: string,
@@ -45,7 +37,6 @@ export class ReadSecretDto {
     createdAt: Date,
     updatedAt: Date
   ) {
-    this._id = _id;
     this.hashedSecretText = hashedSecretText;
     this.secretName = secretName;
     this.secretText = secretText;
@@ -55,5 +46,26 @@ export class ReadSecretDto {
   }
 }
 
-export type ReadSecretMetaDto = Omit<ReadSecretDto, 'secretText'>;
+export class ReadSecretMetaDto {
+  hashedSecretText: string;
+  secretName: string;
+  remainingViews: number;
+  createdAt: Date;
+  updatedAt: Date;
+
+  constructor(
+    hashedSecretText: string,
+    secretName: string,
+    remainingViews: number,
+    createdAt: Date,
+    updatedAt: Date
+  ) {
+    this.hashedSecretText = hashedSecretText;
+    this.secretName = secretName;
+    this.remainingViews = remainingViews;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
+}
+
 export type UpdateSecretMetaDto = Partial<ReadSecretDto>;

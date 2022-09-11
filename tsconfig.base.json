@@ -10,13 +10,23 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@secret-manager/api-interfaces": ["libs/api-interfaces/src/index.ts"]
-    }
+      "@secret-manager/api-interfaces": [
+        "libs/api-interfaces/src/index.ts"
+      ]
+    },
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

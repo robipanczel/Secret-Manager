@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   CreateSecretDto,
   PaginationQuery,
+  ReadSecretDto,
   ReadSecretMetaDto,
 } from '@secret-manager/api-interfaces';
 import { Secret } from '../schemas/secret.schema';
@@ -77,7 +78,7 @@ describe('SecretService', () => {
     let repositoryFindOneSpy: jest.SpyInstance;
     let repositoryRemoveSpy: jest.SpyInstance;
     let repositoryUpdateSpy: jest.SpyInstance;
-    let secret: Secret;
+    let secret: ReadSecretDto;
 
     beforeEach(async () => {
       repositoryFindOneSpy = jest.spyOn(secretRepository, 'findOne');
@@ -105,9 +106,11 @@ describe('SecretService', () => {
     });
 
     it('should call secretRepository.update() with a hash and the updated secret', async () => {
+      const mySecretStub = secretStub();
+      mySecretStub.remainingViews -= 1;
       expect(repositoryUpdateSpy).toHaveBeenCalledWith(
         secret.hashedSecretText,
-        secret
+        mySecretStub
       );
     });
 
@@ -145,7 +148,7 @@ describe('SecretService', () => {
     });
 
     it('should return with a ReadSecretMetaDto', async () => {
-      expect(rSecretMetaDto).toEqual(readSecretMetaDto())
-    })
+      expect(rSecretMetaDto).toEqual(readSecretMetaDto());
+    });
   });
 });

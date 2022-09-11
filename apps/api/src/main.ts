@@ -6,6 +6,7 @@
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { name, version, license } from '../../../package.json';
 
 import { AppModule } from './app/app.module';
 
@@ -18,7 +19,7 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   const port = process.env.PORT || 3333;
   await app.listen(port);
