@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   CreateSecretDto,
   PaginationQuery,
@@ -12,42 +12,53 @@ import { MD5 } from 'object-hash';
 export class SecretService {
   constructor(private readonly secretRepository: SecretRepository) {}
 
-  async getAllSecretMetaData(
-    paginationQuery: PaginationQuery
-  ): Promise<ReadSecretMetaDto[]> {
+  async getAllSecretMetaData(paginationQuery: PaginationQuery) {
     const secrets = await this.secretRepository.findAll(paginationQuery);
-    return secrets.map((secret) => {
-      return {
-        hashedSecretText: secret.hashedSecretText,
-        secretName: secret.secretName,
-        remainingViews: secret.remainingViews,
-        createdAt: secret.createdAt,
-        updatedAt: secret.updatedAt,
-      };
-    });
-  }
-
-  async getSecret(hashedSecretText: string): Promise<ReadSecretDto> {
-    const secret = await this.secretRepository.findOne(hashedSecretText);
-
-    secret.remainingViews -= 1;
-    if (secret.remainingViews === 0) {
-      await this.secretRepository.remove(hashedSecretText);
-    } else {
-      await this.secretRepository.update(hashedSecretText, secret);
-    }
-
-    return new ReadSecretDto(
-      secret.hashedSecretText,
-      secret.secretName,
-      secret.secretText,
-      secret.remainingViews,
-      secret.createdAt,
-      secret.updatedAt
+    return secrets.map(
+      (secret) =>
+        new ReadSecretMetaDto(
+          secret.hashedSecretText,
+          secret.secretName,
+          secret.remainingViews,
+          secret.createdAt,
+          secret.updatedAt
+        )
     );
   }
 
-  async createSecret(secretDto: CreateSecretDto): Promise<ReadSecretMetaDto> {
+  async getSecret(hashedSecretText: string) {
+    const secret = await this.secretRepository.findOne(hashedSecretText);
+
+    if (!secret) {
+      throw new NotFoundException(
+        `Secret with hash ${hashedSecretText} not found`
+      );
+    }
+
+    const updatedOrRemovedSecret =
+      secret.remainingViews === 1
+        ? await this.secretRepository.remove(hashedSecretText)
+        : await this.secretRepository.update(hashedSecretText, {
+            remainingViews: secret.remainingViews - 1,
+          });
+
+    if (!updatedOrRemovedSecret) {
+      throw new NotFoundException(
+        `Secret with hash ${hashedSecretText} not found`
+      );
+    }
+
+    return new ReadSecretDto(
+      updatedOrRemovedSecret.hashedSecretText,
+      updatedOrRemovedSecret.secretName,
+      updatedOrRemovedSecret.secretText,
+      updatedOrRemovedSecret.remainingViews,
+      updatedOrRemovedSecret.createdAt,
+      updatedOrRemovedSecret.updatedAt
+    );
+  }
+
+  async createSecret(secretDto: CreateSecretDto) {
     const hashedText = MD5(secretDto.secretText);
 
     const {

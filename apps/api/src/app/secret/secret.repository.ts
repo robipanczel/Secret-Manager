@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   CreateSecretDto,
@@ -6,16 +6,16 @@ import {
   UpdateSecretMetaDto,
 } from '@secret-manager/api-interfaces';
 import { Model } from 'mongoose';
-import { Secret } from './schemas/secret.schema';
+import { Secret, SecretDocument } from './schemas/secret.schema';
 
 @Injectable()
 export class SecretRepository {
   constructor(
     @InjectModel(Secret.name)
-    private readonly secretModel: Model<Secret>
+    private readonly secretModel: Model<SecretDocument>
   ) {}
 
-  async findAll(paginationQuery: PaginationQuery): Promise<Secret[]> {
+  async findAll(paginationQuery: PaginationQuery) {
     return this.secretModel
       .find()
       .skip(paginationQuery.offset)
@@ -23,57 +23,27 @@ export class SecretRepository {
       .exec();
   }
 
-  async findOne(hashedSecretText: string): Promise<Secret> {
-    const secret = await this.secretModel.findOne({ hashedSecretText });
-
-    if (!secret) {
-      throw new NotFoundException(
-        `Secret with hash ${hashedSecretText} not found`
-      );
-    }
-
-    return secret;
+  async findOne(hashedSecretText: string) {
+    return await this.secretModel.findOne({ hashedSecretText });
   }
 
-  async create(
-    createSecretDto: CreateSecretDto,
-    hashedSecretText: string
-  ): Promise<Secret> {
+  async create(createSecretDto: CreateSecretDto, hashedSecretText: string) {
     return await this.secretModel.create({
       ...createSecretDto,
       hashedSecretText,
     });
   }
 
-  async update(
-    hashedSecretText: string,
-    update: UpdateSecretMetaDto
-  ): Promise<Secret> {
-    const updatedSecret = await this.secretModel.findOneAndUpdate(
+  async update(hashedSecretText: string, update: UpdateSecretMetaDto) {
+    return await this.secretModel.findOneAndUpdate(
       { hashedSecretText },
       update
     );
-
-    if (!updatedSecret) {
-      throw new NotFoundException(
-        `Secret with hash ${hashedSecretText} not found`
-      );
-    }
-
-    return updatedSecret;
   }
 
-  async remove(hashedSecretText: string): Promise<Secret> {
-    const removedSecret = await this.secretModel.findOneAndDelete({
+  async remove(hashedSecretText: string) {
+    return await this.secretModel.findOneAndDelete({
       hashedSecretText,
     });
-
-    if (!removedSecret) {
-      throw new NotFoundException(
-        `Secret with hash ${hashedSecretText} not found`
-      );
-    }
-
-    return removedSecret;
   }
 }

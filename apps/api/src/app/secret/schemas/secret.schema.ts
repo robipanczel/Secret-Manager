@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ReadSecretDto } from '@secret-manager/api-interfaces';
 import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class Secret extends Document {
+export class Secret implements ReadSecretDto {
   @Prop({ required: true })
   hashedSecretText: string;
 
@@ -22,4 +23,5 @@ export class Secret extends Document {
   updatedAt: Date;
 }
 
+export type SecretDocument = Secret & Document;
 export const SecretSchema = SchemaFactory.createForClass(Secret);
