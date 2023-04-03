@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   CreateSecretDto,
   PaginationQuery,
@@ -60,6 +64,12 @@ export class SecretService {
 
   async createSecret(secretDto: CreateSecretDto) {
     const hashedText = MD5(secretDto.secretText);
+
+    if (await this.secretRepository.findOne(hashedText)) {
+      throw new BadRequestException(
+        'Secret already exists, cannot create duplicates'
+      );
+    }
 
     const {
       hashedSecretText,
